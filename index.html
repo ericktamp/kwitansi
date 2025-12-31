@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mom's Bakery - Pro Invoice</title>
+    <title>Mom's Bakery - Invoice</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -24,6 +24,7 @@
             padding: 10px;
         }
 
+        /* Container Card */
         .invoice-card {
             max-width: 850px;
             margin: 0 auto;
@@ -39,11 +40,13 @@
             .invoice-card { padding: 50px; }
         }
 
+        /* Header */
         .header { text-align: center; margin-bottom: 30px; }
         .logo-img { max-height: 70px; width: auto; margin-bottom: 10px; }
         .company-name { font-size: 22px; font-weight: 700; margin: 0; }
         .company-info { font-size: 12px; color: var(--text-muted); line-height: 1.5; }
 
+        /* Meta Info Grid */
         .meta-info {
             display: grid;
             grid-template-columns: 1fr;
@@ -70,25 +73,21 @@
             color: var(--text-main);
         }
 
-        /* Style khusus untuk input date agar terlihat menyatu */
-        input[type="date"] {
-            cursor: pointer;
-            font-family: inherit;
-        }
+        input[type="date"] { cursor: pointer; font-family: inherit; }
 
+        /* Table Style */
         table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
-        
+        th { text-align: left; padding: 12px; border-bottom: 2px solid #eee; font-size: 13px; color: var(--text-muted); }
+        td { padding: 12px; border-bottom: 1px solid #f9f9f9; }
+
         @media (max-width: 600px) {
             thead { display: none; }
             tr { display: block; padding: 15px 0; border-bottom: 1px dashed #eee; }
-            tr.zero-qty.no-print-mobile { display: none; }
+            tr.zero-qty { display: none; } /* Sembunyikan yang nol di mobile */
             td { display: flex; justify-content: space-between; padding: 5px 0 !important; border: none !important; font-size: 13px; }
             td::before { content: attr(data-label); font-weight: 600; color: var(--text-muted); }
             .qty-input { width: 80px !important; }
         }
-
-        th { text-align: left; padding: 12px; border-bottom: 2px solid #eee; font-size: 13px; color: var(--text-muted); }
-        td { padding: 12px; border-bottom: 1px solid #f9f9f9; }
 
         .qty-input {
             width: 60px;
@@ -98,10 +97,12 @@
             text-align: center;
         }
 
+        /* Summary Area */
         .summary { margin-left: auto; width: 100%; max-width: 300px; margin-top: 20px; }
         .total-row { display: flex; justify-content: space-between; padding: 8px 0; }
         .grand-total { border-top: 2px solid var(--primary); font-size: 18px; font-weight: 700; padding-top: 12px; }
 
+        /* Footer & Stamp */
         .footer { margin-top: 40px; display: flex; flex-direction: column; gap: 30px; }
         @media (min-width: 600px) {
             .footer { flex-direction: row; justify-content: space-between; align-items: flex-end; }
@@ -115,10 +116,13 @@
         .sig-text { position: relative; z-index: 2; font-size: 12px; }
         .sig-name { position: relative; z-index: 2; font-weight: 700; border-top: 1px solid #333; margin-top: 50px; padding-top: 5px; }
 
+        /* Buttons */
         .actions { max-width: 850px; margin: 15px auto; display: flex; gap: 10px; justify-content: flex-end; }
-        .btn { padding: 10px 20px; border-radius: 6px; cursor: pointer; border: none; font-weight: 600; font-size: 13px; }
+        .btn { padding: 10px 20px; border-radius: 6px; cursor: pointer; border: none; font-weight: 600; font-size: 13px; transition: 0.2s; }
         .btn-print { background: var(--primary); color: white; }
+        .btn-print:hover { background: #000; }
 
+        /* Print Logic */
         @media print {
             body { background: white; padding: 0; }
             .invoice-card { box-shadow: none; border: none; padding: 0; width: 100%; }
@@ -136,7 +140,7 @@
 <body>
 
     <div class="actions">
-        <button class="btn btn-print" onclick="window.print()">Cetak / PDF</button>
+        <button class="btn btn-print" onclick="generatePDF()">Cetak / Simpan PDF</button>
     </div>
 
     <div class="invoice-card">
@@ -160,7 +164,7 @@
             </div>
             <div class="meta-item" style="grid-column: 1 / -1;">
                 <label>Pelanggan</label>
-                <input type="text" placeholder="Nama Pelanggan...">
+                <input type="text" id="customerName" placeholder="Masukkan Nama Pelanggan...">
             </div>
         </div>
 
@@ -208,17 +212,17 @@
         const PRICE = 5000;
 
         function init() {
+            // 1. Generate Nomor Faktur Random
             const now = new Date();
-            
-            // Set Nomor Faktur
             document.getElementById('invoiceNumber').innerText = `MB-${now.getTime().toString().slice(-8)}`;
             
-            // Set Tanggal Hari Ini ke Input (Format YYYY-MM-DD)
+            // 2. Set Tanggal Hari Ini ke Input Date
             const year = now.getFullYear();
             const month = String(now.getMonth() + 1).padStart(2, '0');
             const day = String(now.getDate()).padStart(2, '0');
             document.getElementById('invoiceDate').value = `${year}-${month}-${day}`;
 
+            // 3. Render Daftar Menu
             const tbody = document.getElementById('itemRows');
             menu.forEach(item => {
                 const tr = document.createElement('tr');
@@ -235,24 +239,49 @@
             });
         }
 
+        // Fungsi Update Tiap Baris
         function updateRow(el) {
             const row = el.closest('tr');
             const qty = parseInt(el.value) || 0;
             const sub = qty * PRICE;
             row.querySelector('.row-total').innerText = sub.toLocaleString('id-ID');
             
+            // Tandai baris yang qty-nya > 0 agar tidak hilang saat print
             if(qty > 0) row.classList.remove('zero-qty');
             else row.classList.add('zero-qty');
             
-            calc();
+            calculateTotal();
         }
 
-        function calc() {
+        // Hitung Grand Total
+        function calculateTotal() {
             let total = 0;
-            document.querySelectorAll('.qty-input').forEach(i => total += (parseInt(i.value) || 0) * PRICE);
+            document.querySelectorAll('.qty-input').forEach(i => {
+                total += (parseInt(i.value) || 0) * PRICE;
+            });
             const fmt = "Rp " + total.toLocaleString('id-ID');
             document.getElementById('subtotalDisplay').innerText = fmt;
             document.getElementById('grandTotalDisplay').innerText = fmt;
+        }
+
+        // Fungsi Generate PDF dengan Nama Custom
+        function generatePDF() {
+            const customer = document.getElementById('customerName').value.trim() || "Pelanggan";
+            const date = document.getElementById('invoiceDate').value;
+            
+            // Simpan Judul Asli Halaman
+            const originalTitle = document.title;
+            
+            // Set Judul Halaman Sementara (Ini yang jadi nama file PDF)
+            document.title = `Invoice_${customer}_${date}`;
+            
+            // Panggil Jendela Cetak
+            window.print();
+            
+            // Kembalikan Judul Setelah 1 detik
+            setTimeout(() => {
+                document.title = originalTitle;
+            }, 1000);
         }
 
         window.onload = init;

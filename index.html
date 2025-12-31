@@ -21,36 +21,32 @@
             background-color: var(--bg);
             color: var(--text-main);
             margin: 0;
-            padding: 10px; /* Padding kecil buat mobile */
+            padding: 10px;
         }
 
-        /* Container Responsif */
         .invoice-card {
             max-width: 850px;
             margin: 0 auto;
             background: var(--white);
             border-radius: 12px;
             box-shadow: 0 4px 20px rgba(0,0,0,0.08);
-            padding: 20px; /* Mobile padding */
+            padding: 20px;
             position: relative;
         }
 
-        /* Desktop Padding */
         @media (min-width: 768px) {
             body { padding: 40px 20px; }
             .invoice-card { padding: 50px; }
         }
 
-        /* Header */
         .header { text-align: center; margin-bottom: 30px; }
         .logo-img { max-height: 70px; width: auto; margin-bottom: 10px; }
         .company-name { font-size: 22px; font-weight: 700; margin: 0; }
         .company-info { font-size: 12px; color: var(--text-muted); line-height: 1.5; }
 
-        /* Meta Info Grid */
         .meta-info {
             display: grid;
-            grid-template-columns: 1fr; /* Stack di mobile */
+            grid-template-columns: 1fr;
             gap: 15px;
             margin-bottom: 30px;
             padding: 15px;
@@ -64,34 +60,33 @@
         }
 
         .meta-item label { display: block; font-size: 10px; font-weight: 700; color: var(--accent); text-transform: uppercase; }
-        .meta-item span, .meta-item input { font-size: 14px; font-weight: 600; width: 100%; border: none; background: transparent; outline: none; }
+        .meta-item span, .meta-item input { 
+            font-size: 14px; 
+            font-weight: 600; 
+            width: 100%; 
+            border: none; 
+            background: transparent; 
+            outline: none;
+            color: var(--text-main);
+        }
 
-        /* Table & Mobile Responsive Mode */
+        /* Style khusus untuk input date agar terlihat menyatu */
+        input[type="date"] {
+            cursor: pointer;
+            font-family: inherit;
+        }
+
         table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
         
-        /* Hilangkan header tabel di mobile */
         @media (max-width: 600px) {
             thead { display: none; }
-            tr { 
-                display: block; 
-                padding: 15px 0; 
-                border-bottom: 1px dashed #eee; 
-            }
-            /* Hanya tampilkan baris yang ada isinya di mobile */
+            tr { display: block; padding: 15px 0; border-bottom: 1px dashed #eee; }
             tr.zero-qty.no-print-mobile { display: none; }
-            
-            td { 
-                display: flex; 
-                justify-content: space-between; 
-                padding: 5px 0 !important; 
-                border: none !important;
-                font-size: 13px;
-            }
+            td { display: flex; justify-content: space-between; padding: 5px 0 !important; border: none !important; font-size: 13px; }
             td::before { content: attr(data-label); font-weight: 600; color: var(--text-muted); }
             .qty-input { width: 80px !important; }
         }
 
-        /* Desktop Table Style */
         th { text-align: left; padding: 12px; border-bottom: 2px solid #eee; font-size: 13px; color: var(--text-muted); }
         td { padding: 12px; border-bottom: 1px solid #f9f9f9; }
 
@@ -103,63 +98,34 @@
             text-align: center;
         }
 
-        /* Summary */
-        .summary { 
-            margin-left: auto; 
-            width: 100%; 
-            max-width: 300px;
-            margin-top: 20px;
-        }
+        .summary { margin-left: auto; width: 100%; max-width: 300px; margin-top: 20px; }
         .total-row { display: flex; justify-content: space-between; padding: 8px 0; }
         .grand-total { border-top: 2px solid var(--primary); font-size: 18px; font-weight: 700; padding-top: 12px; }
 
-        /* Footer & Stamp */
-        .footer { 
-            margin-top: 40px; 
-            display: flex; 
-            flex-direction: column; 
-            gap: 30px; 
-        }
+        .footer { margin-top: 40px; display: flex; flex-direction: column; gap: 30px; }
         @media (min-width: 600px) {
             .footer { flex-direction: row; justify-content: space-between; align-items: flex-end; }
         }
 
         .payment-details { font-size: 11px; color: var(--text-muted); line-height: 1.6; }
-
-        .signature-area { 
-            position: relative; 
-            width: 180px; 
-            text-align: center; 
-            margin: 0 auto;
-        }
+        .signature-area { position: relative; width: 180px; text-align: center; margin: 0 auto; }
         @media (min-width: 600px) { .signature-area { margin: 0; } }
 
-        .stamp-img {
-            position: absolute;
-            top: 10px; left: 50%;
-            transform: translateX(-50%);
-            width: 100px;
-            opacity: 0.6;
-            z-index: 1;
-            pointer-events: none;
-        }
-
+        .stamp-img { position: absolute; top: 10px; left: 50%; transform: translateX(-50%); width: 100px; opacity: 0.6; z-index: 1; pointer-events: none; }
         .sig-text { position: relative; z-index: 2; font-size: 12px; }
         .sig-name { position: relative; z-index: 2; font-weight: 700; border-top: 1px solid #333; margin-top: 50px; padding-top: 5px; }
 
-        /* Buttons */
         .actions { max-width: 850px; margin: 15px auto; display: flex; gap: 10px; justify-content: flex-end; }
         .btn { padding: 10px 20px; border-radius: 6px; cursor: pointer; border: none; font-weight: 600; font-size: 13px; }
         .btn-print { background: var(--primary); color: white; }
 
-        /* Print Logic */
         @media print {
             body { background: white; padding: 0; }
             .invoice-card { box-shadow: none; border: none; padding: 0; width: 100%; }
             .actions, .qty-input::-webkit-inner-spin-button { display: none !important; }
             tr.zero-qty { display: none !important; }
             .qty-input { border: none; background: transparent; }
-            /* Memastikan Tabel tetap tabel saat print */
+            input[type="date"] { border: none; -webkit-appearance: none; }
             thead { display: table-header-group; }
             tr { display: table-row; }
             td { display: table-cell !important; }
@@ -189,8 +155,8 @@
                 <span id="invoiceNumber"></span>
             </div>
             <div class="meta-item">
-                <label>Tanggal</label>
-                <span id="invoiceDate"></span>
+                <label>Tanggal Transaksi</label>
+                <input type="date" id="invoiceDate">
             </div>
             <div class="meta-item" style="grid-column: 1 / -1;">
                 <label>Pelanggan</label>
@@ -243,8 +209,15 @@
 
         function init() {
             const now = new Date();
+            
+            // Set Nomor Faktur
             document.getElementById('invoiceNumber').innerText = `MB-${now.getTime().toString().slice(-8)}`;
-            document.getElementById('invoiceDate').innerText = now.toLocaleDateString('id-ID', { day:'numeric', month:'long', year:'numeric' });
+            
+            // Set Tanggal Hari Ini ke Input (Format YYYY-MM-DD)
+            const year = now.getFullYear();
+            const month = String(now.getMonth() + 1).padStart(2, '0');
+            const day = String(now.getDate()).padStart(2, '0');
+            document.getElementById('invoiceDate').value = `${year}-${month}-${day}`;
 
             const tbody = document.getElementById('itemRows');
             menu.forEach(item => {
@@ -282,7 +255,7 @@
             document.getElementById('grandTotalDisplay').innerText = fmt;
         }
 
-            window.onload = init;
+        window.onload = init;
     </script>
 </body>
 </html>

@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mom's Bakery - Invoice</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #2d3436;
+            --accent: #d4a373;
+            --bg: #f3f4f6;
+            --white: #ffffff;
+            --text-main: #2d3436;
+            --text-muted: #636e72;
+        }
+        * { box-sizing: border-box; font-family: 'Inter', sans-serif; }
+        body {
+            background-color: var(--bg);
+            color: var(--text-main);
+            margin: 0;
+            padding: 10px;
+        }
+        .invoice-card {
+            max-width: 800px;
+            margin: 0 auto;
+            background: var(--white);
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            padding: 40px;
+            position: relative;
+        }
+        .header { text-align: center; margin-bottom: 30px; }
+        .logo-img { max-height: 70px; width: auto; margin-bottom: 10px; }
+        .company-name { font-size: 24px; font-weight: 700; margin: 0; letter-spacing: 1px; }
+        .company-info { font-size: 12px; color: var(--text-muted); line-height: 1.6; }
+        
+        .meta-info {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: #fafafa;
+            border-radius: 8px;
+            border: 1px solid #eee;
+        }
+        .meta-item label { display: block; font-size: 10px; font-weight: 700; color: var(--accent); text-transform: uppercase; margin-bottom: 4px; }
+        .meta-item span, .meta-item input {
+            font-size: 14px;
+            font-weight: 600;
+            width: 100%;
+            border: none;
+            background: transparent;
+            outline: none;
+            color: var(--text-main);
+        }
+
+        table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
+        th { text-align: left; padding: 12px; border-bottom: 2px solid #eee; font-size: 13px; color: var(--text-muted); }
+        td { padding: 12px; border-bottom: 1px solid #f9f9f9; font-size: 14px; }
+        
+        .qty-input {
+            width: 60px;
+            padding: 6px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            text-align: center;
+        }
+
+        .summary { margin-left: auto; width: 100%; max-width: 250px; margin-top: 20px; }
+        .total-row { display: flex; justify-content: space-between; padding: 8px 0; }
+        .grand-total { border-top: 2px solid var(--primary); font-size: 18px; font-weight: 700; padding-top: 12px; }
+
+        .footer { margin-top: 50px; display: flex; justify-content: space-between; align-items: flex-end; }
+        .payment-details { font-size: 11px; color: var(--text-muted); line-height: 1.6; }
+        .signature-area { position: relative; width: 180px; text-align: center; }
+        .stamp-img { position: absolute; top: 0px; left: 50%; transform: translateX(-50%); width: 100px; opacity: 0.5; z-index: 1; pointer-events: none; }
+        .sig-text { position: relative; z-index: 2; font-size: 12px; margin-bottom: 50px; }
+        .sig-name { font-weight: 700; border-top: 1px solid #333; padding-top: 5px; }
+
+        .actions { max-width: 800px; margin: 15px auto; display: flex; gap: 10px; justify-content: flex-end; }
+        .btn { padding: 10px 20px; border-radius: 6px; cursor: pointer; border: none; font-weight: 600; transition: 0.2s; }
+        .btn-print { background: var(--primary); color: white; }
+
+        @media print {
+            @page { margin: 0; size: auto; }
+            body { background: white; padding: 0; margin: 1.5cm; }
+            .actions, .qty-input::-webkit-inner-spin-button { display: none !important; }
+            .invoice-card { box-shadow: none; border: none; padding: 0; width: 100%; }
+            tr.zero-qty { display: none !important; }
+            .qty-input { border: none !important; background: transparent !important; appearance: none; -moz-appearance: textfield; }
+            input[type="date"], input[type="text"] { border: none !important; }
+        }
+    </style>
+</head>
+<body>
+    <div class="actions">
+        <button class="btn btn-print" onclick="generatePDF()">Cetak / Simpan PDF</button>
+    </div>
+
+    <div class="invoice-card" id="printArea">
+        <div class="header">
+            <img src="logo-kamu.png" alt="Logo" class="logo-img" onerror="this.style.display='none'">
+            <h1 class="company-name">MOM'S BAKERY</h1>
+            <div class="company-info">
+                Jakarta, Indonesia<br>
+                WA: 0812-9676-1659 | BCA: 035-139-8298 a/n PURNAMAWATI
+            </div>
+        </div>
+
+        <div class="meta-info">
+            <div class="meta-item">
+                <label>Nomor Faktur</label>
+                <span id="invoiceNumber"></span>
+            </div>
+            <div class="meta-item">
+                <label>Tanggal Transaksi</label>
+                <input type="date" id="invoiceDate" onchange="updatePDFName()">
+            </div>
+            <div class="meta-item" style="grid-column: 1 / -1;">
+                <label>Pelanggan</label>
+                <input type="text" id="customerName" placeholder="Nama Pelanggan" oninput="updatePDFName()">
+            </div>
+        </div>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Menu</th>
+                    <th style="text-align: center;">Harga (Rp)</th>
+                    <th style="text-align: center;">Qty</th>
+                    <th style="text-align: right;">Total</th>
+                </tr>
+            </thead>
+            <tbody id="itemRows"></tbody>
+        </table>
+
+        <div class="summary">
+            <div class="total-row">
+                <span style="color: var(--text-muted)">Subtotal</span>
+                <span id="subtotalDisplay">Rp 0</span>
+            </div>
+            <div class="total-row grand-total">
+                <span>Total</span>
+                <span id="grandTotalDisplay">Rp 0</span>
+            </div>
+        </div>
+
+        <div class="footer">
+            <div class="payment-details">
+                <strong>Notes:</strong><br>
+                • Simpan invoice ini sebagai bukti bayar<br>
+                • Terima kasih sudah jajan di Mom's Bakery!<br>
+                • Jangan Lupa Untuk Mampir Belanja Lagi!
+            </div>
+            
+            <div class="signature-area">
+                <div class="sig-text">Hormat Kami,</div>
+                <img src="stempel-moms.png" alt="" class="stamp-img" onerror="this.style.display='none'">
+                <div class="sig-name">Mom's Bakery</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const menuData = [
+            { name: "Mie Kecil/Lebar", price: 25000 },
+            { name: "Bihun", price: 25000 },
+            { name: "Kwetiaw", price: 25000 },
+            { name: "Locupan", price: 25000 },
+            { name: "Nasi Tim", price: 30000 },
+            { name: "Bacang Beras B2/Ayam (Polos)", price: 18000 },
+            { name: "Bacang Beras B2/Ayam (Telur)", price: 20000 },
+            { name: "Bacang Ketan B2/Ayam (Polos)", price: 19000 },
+            { name: "Bacang Ketan B2/Ayam (Telur)", price: 21000 },
+            { name: "Bakpao B2 Kecap", price: 15000 },
+            { name: "Bakpao B2 Merah", price: 15000 },
+            { name: "Bakpao Kacang Tanah", price: 15000 },
+            { name: "Bakpao Kacang Hitam", price: 15000 },
+            { name: "Bakpao Coklat", price: 15000 },
+            { name: "Bakpao Ayam", price: 15000 },
+            { name: "Pastel Telur", price: 5000 },
+            { name: "Lapis Legit", price: 5000 },
+            { name: "Lapis Surabaya", price: 5000 },
+            { name: "Sus Fla", price: 5000 },
+            { name: "Arem2 Daging", price: 5000 },
+            { name: "Arem2 Sayur", price: 5000 },
+            { name: "Arem2 Ayam", price: 5000 },
+            { name: "Bolu Spoon", price: 5000 },
+            { name: "Tahu Goreng", price: 5000 },
+            { name: "Tahu Baso", price: 5000 },
+            { name: "Lemper Ayam", price: 5000 },
+            { name: "Martabak", price: 5000 },
+            { name: "Bakwan Udang", price: 5000 },
+            { name: "Nagasari", price: 5000 },
+            { name: "Donat Coklat", price: 5000 },
+            { name: "Dadar Gulung Coklat", price: 5000 },
+            { name: "Sosis Solo", price: 5000 },
+            { name: "Bomboloni", price: 5000 },
+            { name: "Risol Mayo", price: 5000 },
+            { name: "Risol Rogut", price: 5000 },
+            { name: "Roti Pizza", price: 5000 },
+            { name: "Nasi Bakar Ayam Suwir", price: 12000 },
+            { name: "Coi Pan", price: 15000 }
+        ];
+
+        function init() {
+            const now = new Date();
+            document.getElementById('invoiceNumber').innerText = `MB-${now.getTime().toString().slice(-8)}`;
+            
+            const year = now.getFullYear();
+            const month = String(now.getMonth() + 1).padStart(2, '0');
+            const day = String(now.getDate()).padStart(2, '0');
+            document.getElementById('invoiceDate').value = `${year}-${month}-${day}`;
+
+            const tbody = document.getElementById('itemRows');
+            menuData.forEach((item) => {
+                const tr = document.createElement('tr');
+                tr.className = 'zero-qty';
+                tr.innerHTML = `
+                    <td>${item.name}</td>
+                    <td style="text-align: center;">${item.price.toLocaleString('id-ID')}</td>
+                    <td style="text-align: center;">
+                        <input type="number" min="0" value="0" class="qty-input" 
+                               data-price="${item.price}" oninput="updateRow(this)">
+                    </td>
+                    <td style="text-align: right; font-weight: 600;">Rp <span class="row-total">0</span></td>
+                `;
+                tbody.appendChild(tr);
+            });
+            
+            updatePDFName();
+        }
+
+        function updateRow(el) {
+            const row = el.closest('tr');
+            const price = parseInt(el.getAttribute('data-price'));
+            const qty = parseInt(el.value) || 0;
+            const sub = qty * price;
+            
+            row.querySelector('.row-total').innerText = sub.toLocaleString('id-ID');
+            
+            if(qty > 0) row.classList.remove('zero-qty');
+            else row.classList.add('zero-qty');
+            
+            calculateTotal();
+        }
+
+        function calculateTotal() {
+            let total = 0;
+            document.querySelectorAll('.qty-input').forEach(i => {
+                const p = parseInt(i.getAttribute('data-price'));
+                const q = parseInt(i.value) || 0;
+                total += (p * q);
+            });
+            const fmt = "Rp " + total.toLocaleString('id-ID');
+            document.getElementById('subtotalDisplay').innerText = fmt;
+            document.getElementById('grandTotalDisplay').innerText = fmt;
+        }
+
+        function updatePDFName() {
+            const customer = document.getElementById('customerName').value.trim() || "Pelanggan";
+            const date = document.getElementById('invoiceDate').value;
+            const invoiceNum = document.getElementById('invoiceNumber').innerText;
+            
+            const cleanCustomer = customer.replace(/[^a-zA-Z0-9]/g, '_');
+            const cleanDate = date.replace(/-/g, '');
+            
+            document.title = `Invoice_${cleanCustomer}_${cleanDate}_${invoiceNum}`;
+        }
+
+        function generatePDF() {
+            const customer = document.getElementById('customerName').value.trim();
+            
+            if (!customer) {
+                alert("Harap isi nama pelanggan terlebih dahulu!");
+                document.getElementById('customerName').focus();
+                return;
+            }
+            
+            updatePDFName();
+            window.print();
+        }
+
+        window.onload = init;
+    </script>
+</body>
+</html>

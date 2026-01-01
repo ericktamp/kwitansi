@@ -14,17 +14,13 @@
             --text-main: #2d3436;
             --text-muted: #636e72;
         }
-
         * { box-sizing: border-box; font-family: 'Inter', sans-serif; }
-
         body {
             background-color: var(--bg);
             color: var(--text-main);
             margin: 0;
             padding: 10px;
         }
-
-        /* Container Card */
         .invoice-card {
             max-width: 800px;
             margin: 0 auto;
@@ -34,14 +30,11 @@
             padding: 40px;
             position: relative;
         }
-
-        /* Header */
         .header { text-align: center; margin-bottom: 30px; }
         .logo-img { max-height: 70px; width: auto; margin-bottom: 10px; }
         .company-name { font-size: 24px; font-weight: 700; margin: 0; letter-spacing: 1px; }
         .company-info { font-size: 12px; color: var(--text-muted); line-height: 1.6; }
-
-        /* Meta Info Grid */
+        
         .meta-info {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -52,23 +45,21 @@
             border-radius: 8px;
             border: 1px solid #eee;
         }
-
         .meta-item label { display: block; font-size: 10px; font-weight: 700; color: var(--accent); text-transform: uppercase; margin-bottom: 4px; }
-        .meta-item span, .meta-item input { 
-            font-size: 14px; 
-            font-weight: 600; 
-            width: 100%; 
-            border: none; 
-            background: transparent; 
+        .meta-item span, .meta-item input {
+            font-size: 14px;
+            font-weight: 600;
+            width: 100%;
+            border: none;
+            background: transparent;
             outline: none;
             color: var(--text-main);
         }
 
-        /* Table */
         table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
         th { text-align: left; padding: 12px; border-bottom: 2px solid #eee; font-size: 13px; color: var(--text-muted); }
         td { padding: 12px; border-bottom: 1px solid #f9f9f9; font-size: 14px; }
-
+        
         .qty-input {
             width: 60px;
             padding: 6px;
@@ -77,12 +68,10 @@
             text-align: center;
         }
 
-        /* Summary Area */
         .summary { margin-left: auto; width: 100%; max-width: 250px; margin-top: 20px; }
         .total-row { display: flex; justify-content: space-between; padding: 8px 0; }
         .grand-total { border-top: 2px solid var(--primary); font-size: 18px; font-weight: 700; padding-top: 12px; }
 
-        /* Footer & Signature */
         .footer { margin-top: 50px; display: flex; justify-content: space-between; align-items: flex-end; }
         .payment-details { font-size: 11px; color: var(--text-muted); line-height: 1.6; }
         .signature-area { position: relative; width: 180px; text-align: center; }
@@ -90,44 +79,22 @@
         .sig-text { position: relative; z-index: 2; font-size: 12px; margin-bottom: 50px; }
         .sig-name { font-weight: 700; border-top: 1px solid #333; padding-top: 5px; }
 
-        /* Buttons */
         .actions { max-width: 800px; margin: 15px auto; display: flex; gap: 10px; justify-content: flex-end; }
         .btn { padding: 10px 20px; border-radius: 6px; cursor: pointer; border: none; font-weight: 600; transition: 0.2s; }
         .btn-print { background: var(--primary); color: white; }
 
-        /* --- PRINT LOGIC --- */
         @media print {
-            /* Menghilangkan Header & Footer Browser (URL, Date, Title) */
-            @page { 
-                margin: 0; 
-                size: auto;
-            }
-            
-            body { 
-                background: white; 
-                padding: 0; 
-                margin: 1.5cm; /* Memberi margin manual agar konten tidak terpotong */
-            }
-
+            @page { margin: 0; size: auto; }
+            body { background: white; padding: 0; margin: 1.5cm; }
             .actions, .qty-input::-webkit-inner-spin-button { display: none !important; }
             .invoice-card { box-shadow: none; border: none; padding: 0; width: 100%; }
-            
-            /* Sembunyikan item dengan qty 0 */
             tr.zero-qty { display: none !important; }
-            
-            /* Input styling saat print */
             .qty-input { border: none !important; background: transparent !important; appearance: none; -moz-appearance: textfield; }
             input[type="date"], input[type="text"] { border: none !important; }
-            
-            /* Pastikan tabel tetap rapi */
-            thead { display: table-header-group; }
-            tr { display: table-row; }
-            td { display: table-cell !important; }
         }
     </style>
 </head>
 <body>
-
     <div class="actions">
         <button class="btn btn-print" onclick="generatePDF()">Cetak / Simpan PDF</button>
     </div>
@@ -161,7 +128,7 @@
             <thead>
                 <tr>
                     <th>Menu</th>
-                    <th style="text-align: center;">Harga</th>
+                    <th style="text-align: center;">Harga (Rp)</th>
                     <th style="text-align: center;">Qty</th>
                     <th style="text-align: right;">Total</th>
                 </tr>
@@ -197,8 +164,54 @@
     </div>
 
     <script>
-        const menu = ["Pastel Telur", "Lontong Daging", "Donat Coklat", "Donat Gula", "Tahu Baso", "Risol Mayonaise", "Risol Rogut", "Lapis Surabaya", "Lapis Legit", "Tahu Goreng", "Bakwan Udang", "Lemper Ayam", "Soes Fla", "Getuk", "Martabak", "Nagasari"];
-        const PRICE = 5000;
+        const menuData = [
+            // MI-MIAN
+            { name: "Mie Kecil/Lebar", price: 25000 },
+            { name: "Bihun", price: 25000 },
+            { name: "Kwetiaw", price: 25000 },
+            { name: "Locupan", price: 25000 },
+            { name: "Nasi Tim", price: 30000 },
+            
+            // BACANG
+            { name: "Bacang Beras B2/Ayam (Polos)", price: 18000 },
+            { name: "Bacang Beras B2/Ayam (Telur)", price: 20000 },
+            { name: "Bacang Ketan B2/Ayam (Polos)", price: 19000 },
+            { name: "Bacang Ketan B2/Ayam (Telur)", price: 21000 },
+            
+            // BAKPAO
+            { name: "Bakpao B2 Kecap", price: 15000 },
+            { name: "Bakpao B2 Merah", price: 15000 },
+            { name: "Bakpao Kacang Tanah", price: 15000 },
+            { name: "Bakpao Kacang Hitam", price: 15000 },
+            { name: "Bakpao Coklat", price: 15000 },
+            { name: "Bakpao Ayam", price: 15000 },
+
+            // KUE-KUE 5K
+            { name: "Pastel Telur", price: 5000 },
+            { name: "Lapis Legit", price: 5000 },
+            { name: "Lapis Surabaya", price: 5000 },
+            { name: "Sus Fla", price: 5000 },
+            { name: "Arem2 Daging", price: 5000 },
+            { name: "Arem2 Sayur", price: 5000 },
+            { name: "Arem2 Ayam", price: 5000 },
+            { name: "Bolu Spoon", price: 5000 },
+            { name: "Tahu Goreng", price: 5000 },
+            { name: "Tahu Baso", price: 5000 },
+            { name: "Lemper Ayam", price: 5000 },
+            { name: "Martabak", price: 5000 },
+            { name: "Bakwan Udang", price: 5000 },
+            { name: "Nagasari", price: 5000 },
+            { name: "Donat Coklat", price: 5000 },
+            { name: "Dadar Gulung Coklat", price: 5000 },
+            { name: "Sosis Solo", price: 5000 },
+            { name: "Bomboloni", price: 5000 },
+            { name: "Risol Mayo", price: 5000 },
+            { name: "Roti Pizza", price: 5000 },
+
+            // OTHERS
+            { name: "Nasi Bakar Ayam Suwir", price: 12000 },
+            { name: "Coi Pan", price: 15000 }
+        ];
 
         function init() {
             const now = new Date();
@@ -210,14 +223,15 @@
             document.getElementById('invoiceDate').value = `${year}-${month}-${day}`;
 
             const tbody = document.getElementById('itemRows');
-            menu.forEach(item => {
+            menuData.forEach((item, index) => {
                 const tr = document.createElement('tr');
                 tr.className = 'zero-qty';
                 tr.innerHTML = `
-                    <td>${item}</td>
-                    <td style="text-align: center;">5.000</td>
+                    <td>${item.name}</td>
+                    <td style="text-align: center;">${item.price.toLocaleString('id-ID')}</td>
                     <td style="text-align: center;">
-                        <input type="number" min="0" value="0" class="qty-input" oninput="updateRow(this)">
+                        <input type="number" min="0" value="0" class="qty-input" 
+                               data-price="${item.price}" oninput="updateRow(this)">
                     </td>
                     <td style="text-align: right; font-weight: 600;">Rp <span class="row-total">0</span></td>
                 `;
@@ -227,8 +241,10 @@
 
         function updateRow(el) {
             const row = el.closest('tr');
+            const price = parseInt(el.getAttribute('data-price'));
             const qty = parseInt(el.value) || 0;
-            const sub = qty * PRICE;
+            const sub = qty * price;
+            
             row.querySelector('.row-total').innerText = sub.toLocaleString('id-ID');
             
             if(qty > 0) row.classList.remove('zero-qty');
@@ -240,7 +256,9 @@
         function calculateTotal() {
             let total = 0;
             document.querySelectorAll('.qty-input').forEach(i => {
-                total += (parseInt(i.value) || 0) * PRICE;
+                const p = parseInt(i.getAttribute('data-price'));
+                const q = parseInt(i.value) || 0;
+                total += (p * q);
             });
             const fmt = "Rp " + total.toLocaleString('id-ID');
             document.getElementById('subtotalDisplay').innerText = fmt;

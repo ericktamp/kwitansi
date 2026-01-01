@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mom's Bakery - Pesan Kue & Camilan Lezat</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap');
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .glass { background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(12px); }
+        .menu-card:hover { transform: translateY(-8px); box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1); }
+        .bg-bakery { background: linear-gradient(to bottom, #f5e6d3, #e8d4bf); }
+        input[type="number"]::-webkit-inner-spin-button,
+        input[type="number"]::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+        input[type="number"] {
+            -moz-appearance: textfield;
+        }
+    </style>
+</head>
+<body class="bg-bakery min-h-screen text-amber-900">
+
+    <nav class="glass sticky top-0 z-50 border-b border-amber-300 px-4 sm:px-6 py-4 shadow-md">
+        <div class="max-w-7xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-4">
+            <div class="flex items-center gap-3">
+                <div class="bg-amber-700 p-3 rounded-2xl text-white shadow-lg">
+                    <i data-lucide="cake" class="w-8 h-8"></i>
+                </div>
+                <h1 class="text-2xl font-bold text-amber-800">Mom's <span class="text-amber-600">Bakery</span></h1>
+            </div>
+            <div id="cart-info" class="flex flex-col sm:flex-row items-center gap-4 text-center sm:text-left">
+                <span class="text-sm font-medium">Total Item: <span id="total-items" class="font-bold">0</span> pcs</span>
+                <span class="text-lg font-bold text-amber-700">Rp <span id="total-price">0</span></span>
+                <button onclick="toggleCart()" class="bg-amber-700 text-white px-6 py-3 rounded-full font-semibold hover:bg-amber-800 transition flex items-center gap-2 shadow-lg">
+                    <i data-lucide="shopping-cart" class="w-5 h-5"></i> Keranjang
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 py-12">
+        <div class="text-center mb-12">
+            <h2 class="text-3xl sm:text-4xl md:text-5xl font-extrabold mb-4 text-amber-900">Selamat Datang di Mom's Bakery!</h2>
+            <p class="text-lg sm:text-xl text-amber-700">Kue & camilan homemade lezat dengan cinta dari Mom ❤️</p>
+            <p class="text-base sm:text-lg text-amber-600 mt-4">Semua menu @ Rp 5.000 / pcs • Minimal total pesanan 50 pcs (bisa campur)</p>
+        </div>
+
+        <div id="menu-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-6 mb-16">
+            
+            <!-- Pastel Telur -->
+            <div class="menu-card bg-white rounded-3xl shadow-lg p-4 sm:p-6 border-2 border-amber-300 transition-all duration-300">
+                <img src="https://i.ytimg.com/vi/h7ue8gnmHtU/hq720.jpg" alt="Pastel Telur" class="w-full h-40 object-cover rounded-2xl mb-4">
+                <h3 class="text-lg font-bold text-center mb-2">Pastel Telur</h3>
+                <p class="text-xl font-bold text-amber-700 text-center mb-4">Rp 5.000</p>
+                <div class="flex justify-center items-center gap-3">
+                    <button onclick="updateQty('Pastel Telur', -1)" class="bg-amber-200 w-10 h-10 rounded-full hover:bg-amber-300 text-amber-900 font-bold text-xl">-</button>
+                    <input type="number" id="qty-Pastel Telur" value="0" min="0" onchange="setQty('Pastel Telur', this.value)" class="text-xl font-bold w-16 text-center border-2 border-amber-300 rounded-lg py-1">
+                    <button onclick="updateQty('Pastel Telur', 1)" class="bg-amber-700 text-white w-10 h-10 rounded-full hover:bg-amber-800 font-bold text-xl">+</button>
+                </div>
+            </div>
+
+            <!-- Lontong Daging -->
+            <div class="menu-card bg-white rounded-3xl shadow-lg p-4 sm:p-6 border-2 border-amber-300 transition-all duration-300">
+                <img src="https://www.shutterstock.com/shutterstock/photos/2624217409/display_1500/stock-photo-lontong-sayur-daging-is-a-flavorful-indonesian-dish-made-of-compressed-rice-cakes-served-in-a-rich-2624217409.jpg" alt="Lontong Daging" class="w-full h-40 object-cover rounded-2xl mb-4">
+                <h3 class="text-lg font-bold text-center mb-2">Lontong Daging</h3>
+                <p class="text-xl font-bold text-amber-700 text-center mb-4">Rp 5.000</p>
+                <div class="flex justify-center items-center gap-3">
+                    <button onclick="updateQty('Lontong Daging', -1)" class="bg-amber-200 w-10 h-10 rounded-full hover:bg-amber-300 text-amber-900 font-bold text-xl">-</button>
+                    <input type="number" id="qty-Lontong Daging" value="0" min="0" onchange="setQty('Lontong Daging', this.value)" class="text-xl font-bold w-16 text-center border-2 border-amber-300 rounded-lg py-1">
+                    <button onclick="updateQty('Lontong Daging', 1)" class="bg-amber-700 text-white w-10 h-10 rounded-full hover:bg-amber-800 font-bold text-xl">+</button>
+                </div>
+            </div>
+
+            <!-- Donat Coklat -->
+            <div class="menu-card bg-white rounded-3xl shadow-lg p-4 sm:p-6 border-2 border-amber-300 transition-all duration-300">
+                <img src="https://media.istockphoto.com/id/1201592208/photo/indonesia-chocolate-donuts-kampung-doughnuts.jpg?s=612x612&w=is&k=20&c=vh-9rxHuEqa97LLqYZ5REl55W-IRXAMt4gdIwVNiS4I=" alt="Donat Coklat" class="w-full h-40 object-cover rounded-2xl mb-4">
+                <h3 class="text-lg font-bold text-center mb-2">Donat Coklat</h3>
+                <p class="text-xl font-bold text-amber-700 text-center mb-4">Rp 5.000</p>
+                <div class="flex justify-center items-center gap-3">
+                    <button onclick="updateQty('Donat Coklat', -1)" class="bg-amber-200 w-10 h-10 rounded-full hover:bg-amber-300 text-amber-900 font-bold text-xl">-</button>
+                    <input type="number" id="qty-Donat Coklat" value="0" min="0" onchange="setQty('Donat Coklat', this.value)" class="text-xl font-bold w-16 text-center border-2 border-amber-300 rounded-lg py-1">
+                    <button onclick="updateQty('Donat Coklat', 1)" class="bg-amber-700 text-white w-10 h-10 rounded-full hover:bg-amber-800 font-bold text-xl">+</button>
+                </div>
+            </div>
+
+            <!-- Donat Gula -->
+            <div class="menu-card bg-white rounded-3xl shadow-lg p-4 sm:p-6 border-2 border-amber-300 transition-all duration-300">
+                <img src="https://www.shutterstock.com/shutterstock/photos/534089857/display_1500/stock-photo-donuts-in-indonesian-kue-donat-sugar-donut-and-chocolate-donut-top-view-on-wooden-background-534089857.jpg" alt="Donat Gula" class="w-full h-40 object-cover rounded-2xl mb-4">
+                <h3 class="text-lg font-bold text-center mb-2">Donat Gula</h3>
+                <p class="text-xl font-bold text-amber-700 text-center mb-4">Rp 5.000</p>
+                <div class="flex justify-center items-center gap-3">
+                    <button onclick="updateQty('Donat Gula', -1)" class="bg-amber-200 w-10 h-10 rounded-full hover:bg-amber-300 text-amber-900 font-bold text-xl">-</button>
+                    <input type="number" id="qty-Donat Gula" value="0" min="0" onchange="setQty('Donat Gula', this.value)" class="text-xl font-bold w-16 text-center border-2 border-amber-300 rounded-lg py-1">
+                    <button onclick="updateQty('Donat Gula', 1)" class="bg-amber-700 text-white w-10 h-10 rounded-full hover:bg-amber-800 font-bold text-xl">+</button>
+                </div>
+            </div>
+
+            <!-- Tahu Baso -->
+            <div class="menu-card bg-white rounded-3xl shadow-lg p-4 sm:p-6 border-2 border-amber-300 transition-all duration-300">
+                <img src="https://www.shutterstock.com/image-photo/tahu-bakso-traditional-indonesian-snack-260nw-2707150583.jpg" alt="Tahu Baso" class="w-full h-40 object-cover rounded-2xl mb-4">
+                <h3 class="text-lg font-bold text-center mb-2">Tahu Baso</h3>
+                <p class="text-xl font-bold text-amber-700 text-center mb-4">Rp 5.000</p>
+                <div class="flex justify-center items-center gap-3">
+                    <button onclick="updateQty('Tahu Baso', -1)" class="bg-amber-200 w-10 h-10 rounded-full hover:bg-amber-300 text-amber-900 font-bold text-xl">-</button>
+                    <input type="number" id="qty-Tahu Baso" value="0" min="0" onchange="setQty('Tahu Baso', this.value)" class="text-xl font-bold w-16 text-center border-2 border-amber-300 rounded-lg py-1">
+                    <button onclick="updateQty('Tahu Baso', 1)" class="bg-amber-700 text-white w-10 h-10 rounded-full hover:bg-amber-800 font-bold text-xl">+</button>
+                </div>
+            </div>
+
+            <!-- Risol Mayonaise -->
+            <div class="menu-card bg-white rounded-3xl shadow-lg p-4 sm:p-6 border-2 border-amber-300 transition-all duration-300">
+                <img src="https://www.unileverfoodsolutions.co.id/dam/global-ufs/mcos/SEA/calcmenu/recipes/ID-recipes/desserts-&-bakery/risoles-mayonnaise/main-header.jpg" alt="Risol Mayonaise" class="w-full h-40 object-cover rounded-2xl mb-4">
+                <h3 class="text-lg font-bold text-center mb-2">Risol Mayonaise</h3>
+                <p class="text-xl font-bold text-amber-700 text-center mb-4">Rp 5.000</p>
+                <div class="flex justify-center items-center gap-3">
+                    <button onclick="updateQty('Risol Mayonaise', -1)" class="bg-amber-200 w-10 h-10 rounded-full hover:bg-amber-300 text-amber-900 font-bold text-xl">-</button>
+                    <input type="number" id="qty-Risol Mayonaise" value="0" min="0" onchange="setQty('Risol Mayonaise', this.value)" class="text-xl font-bold w-16 text-center border-2 border-amber-300 rounded-lg py-1">
+                    <button onclick="updateQty('Risol Mayonaise', 1)" class="bg-amber-700 text-white w-10 h-10 rounded-full hover:bg-amber-800 font-bold text-xl">+</button>
+                </div>
+            </div>
+
+            <!-- Risol Rogut -->
+            <div class="menu-card bg-white rounded-3xl shadow-lg p-4 sm:p-6 border-2 border-amber-300 transition-all duration-300">
+                <img src="https://static.vecteezy.com/system/resources/previews/011/878/791/large_2x/risoles-a-typical-indonesian-heavy-snack-made-from-skin-made-from-flour-with-a-salty-and-savory-vegetable-ragout-filling-photo.jpg" alt="Risol Rogut" class="w-full h-40 object-cover rounded-2xl mb-4">
+                <h3 class="text-lg font-bold text-center mb-2">Risol Rogut</h3>
+                <p class="text-xl font-bold text-amber-700 text-center mb-4">Rp 5.000</p>
+                <div class="flex justify-center items-center gap-3">
+                    <button onclick="updateQty('Risol Rogut', -1)" class="bg-amber-200 w-10 h-10 rounded-full hover:bg-amber-300 text-amber-900 font-bold text-xl">-</button>
+                    <input type="number" id="qty-Risol Rogut" value="0" min="0" onchange="setQty('Risol Rogut', this.value)" class="text-xl font-bold w-16 text-center border-2 border-amber-300 rounded-lg py-1">
+                    <button onclick="updateQty('Risol Rogut', 1)" class="bg-amber-700 text-white w-10 h-10 rounded-full hover:bg-amber-800 font-bold text-xl">+</button>
+                </div>
+            </div>
+
+            <!-- Lapis Surabaya -->
+            <div class="menu-card bg-white rounded-3xl shadow-lg p-4 sm:p-6 border-2 border-amber-300 transition-all duration-300">
+                <img src="https://www.agoraliarecipes.com/wp-content/uploads/2022/06/AR00042-14.jpg" alt="Lapis Surabaya" class="w-full h-40 object-cover rounded-2xl mb-4">
+                <h3 class="text-lg font-bold text-center mb-2">Lapis Surabaya</h3>
+                <p class="text-xl font-bold text-amber-700 text-center mb-4">Rp 5.000</p>
+                <div class="flex justify-center items-center gap-3">
+                    <button onclick="updateQty('Lapis Surabaya', -1)" class="bg-amber-200 w-10 h-10 rounded-full hover:bg-amber-300 text-amber-900 font-bold text-xl">-</button>
+                    <input type="number" id="qty-Lapis Surabaya" value="0" min="0" onchange="setQty('Lapis Surabaya', this.value)" class="text-xl font-bold w-16 text-center border-2 border-amber-300 rounded-lg py-1">
+                    <button onclick="updateQty('Lapis Surabaya', 1)" class="bg-amber-700 text-white w-10 h-10 rounded-full hover:bg-amber-800 font-bold text-xl">+</button>
+                </div>
+            </div>
+
+            <!-- Lapis Legit -->
+            <div class="menu-card bg-white rounded-3xl shadow-lg p-4 sm:p-6 border-2 border-amber-300 transition-all duration-300">
+                <img src="https://www.thefooddictator.com/wp-content/uploads/2017/03/IMG_0986-e1489954247741.jpg" alt="Lapis Legit" class="w-full h-40 object-cover rounded-2xl mb-4">
+                <h3 class="text-lg font-bold text-center mb-2">Lapis Legit</h3>
+                <p class="text-xl font-bold text-amber-700 text-center mb-4">Rp 5.000</p>
+                <div class="flex justify-center items-center gap-3">
+                    <button onclick="updateQty('Lapis Legit', -1)" class="bg-amber-200 w-10 h-10 rounded-full hover:bg-amber-300 text-amber-900 font-bold text-xl">-</button>
+                    <input type="number" id="qty-Lapis Legit" value="0" min="0" onchange="setQty('Lapis Legit', this.value)" class="text-xl font-bold w-16 text-center border-2 border-amber-300 rounded-lg py-1">
+                    <button onclick="updateQty('Lapis Legit', 1)" class="bg-amber-700 text-white w-10 h-10 rounded-full hover:bg-amber-800 font-bold text-xl">+</button>
+                </div>
+            </div>
+
+            <!-- Tahu Goreng -->
+            <div class="menu-card bg-white rounded-3xl shadow-lg p-4 sm:p-6 border-2 border-amber-300 transition-all duration-300">
+                <img src="https://tse4.mm.bing.net/th/id/OIP.dWTUP_7aBqLz899x5yMTbAHaFD?pid=Api&P=0&h=180" alt="Tahu Goreng" class="w-full h-40 object-cover rounded-2xl mb-4">
+                <h3 class="text-lg font-bold text-center mb-2">Tahu Goreng</h3>
+                <p class="text-xl font-bold text-amber-700 text-center mb-4">Rp 5.000</p>
+                <div class="flex justify-center items-center gap-3">
+                    <button onclick="updateQty('Tahu Goreng', -1)" class="bg-amber-200 w-10 h-10 rounded-full hover:bg-amber-300 text-amber-900 font-bold text-xl">-</button>
+                    <input type="number" id="qty-Tahu Goreng" value="0" min="0" onchange="setQty('Tahu Goreng', this.value)" class="text-xl font-bold w-16 text-center border-2 border-amber-300 rounded-lg py-1">
+                    <button onclick="updateQty('Tahu Goreng', 1)" class="bg-amber-700 text-white w-10 h-10 rounded-full hover:bg-amber-800 font-bold text-xl">+</button>
+                </div>
+            </div>
+
+            <!-- Bakwan Udang -->
+            <div class="menu-card bg-white rounded-3xl shadow-lg p-4 sm:p-6 border-2 border-amber-300 transition-all duration-300">
+                <img src="https://tse1.mm.bing.net/th/id/OIP.j4rln_HuvHeJVF6nEeNwlgHaFP?pid=Api&P=0&h=180" alt="Bakwan Udang" class="w-full h-40 object-cover rounded-2xl mb-4">
+                <h3 class="text-lg font-bold text-center mb-2">Bakwan Udang</h3>
+                <p class="text-xl font-bold text-amber-700 text-center mb-4">Rp 5.000</p>
+                <div class="flex justify-center items-center gap-3">
+                    <button onclick="updateQty('Bakwan Udang', -1)" class="bg-amber-200 w-10 h-10 rounded-full hover:bg-amber-300 text-amber-900 font-bold text-xl">-</button>
+                    <input type="number" id="qty-Bakwan Udang" value="0" min="0" onchange="setQty('Bakwan Udang', this.value)" class="text-xl font-bold w-16 text-center border-2 border-amber-300 rounded-lg py-1">
+                    <button onclick="updateQty('Bakwan Udang', 1)" class="bg-amber-700 text-white w-10 h-10 rounded-full hover:bg-amber-800 font-bold text-xl">+</button>
+                </div>
+            </div>
+
+            <!-- Lemper Ayam -->
+            <div class="menu-card bg-white rounded-3xl shadow-lg p-4 sm:p-6 border-2 border-amber-300 transition-all duration-300">
+                <img src="https://tse3.mm.bing.net/th/id/OIP.QQWtM2E6RYk8Jbze7gvcogEsDI?pid=Api&P=0&h=180" alt="Lemper Ayam" class="w-full h-40 object-cover rounded-2xl mb-4">
+                <h3 class="text-lg font-bold text-center mb-2">Lemper Ayam</h3>
+                <p class="text-xl font-bold text-amber-700 text-center mb-4">Rp 5.000</p>
+                <div class="flex justify-center items-center gap-3">
+                    <button onclick="updateQty('Lemper Ayam', -1)" class="bg-amber-200 w-10 h-10 rounded-full hover:bg-amber-300 text-amber-900 font-bold text-xl">-</button>
+                    <input type="number" id="qty-Lemper Ayam" value="0" min="0" onchange="setQty('Lemper Ayam', this.value)" class="text-xl font-bold w-16 text-center border-2 border-amber-300 rounded-lg py-1">
+                    <button onclick="updateQty('Lemper Ayam', 1)" class="bg-amber-700 text-white w-10 h-10 rounded-full hover:bg-amber-800 font-bold text-xl">+</button>
+                </div>
+            </div>
+
+            <!-- Soes Fla -->
+            <div class="menu-card bg-white rounded-3xl shadow-lg p-4 sm:p-6 border-2 border-amber-300 transition-all duration-300">
+                <img src="https://tse3.mm.bing.net/th/id/OIP.SMp458rYYSnfvfgZM0SgQgHaHa?pid=Api&P=0&h=180" alt="Soes Fla" class="w-full h-40 object-cover rounded-2xl mb-4">
+                <h3 class="text-lg font-bold text-center mb-2">Soes Fla</h3>
+                <p class="text-xl font-bold text-amber-700 text-center mb-4">Rp 5.000</p>
+                <div class="flex justify-center items-center gap-3">
+                    <button onclick="updateQty('Soes Fla', -1)" class="bg-amber-200 w-10 h-10 rounded-full hover:bg-amber-300 text-amber-900 font-bold text-xl">-</button>
+                    <input type="number" id="qty-Soes Fla" value="0" min="0" onchange="setQty('Soes Fla', this.value)" class="text-xl font-bold w-16 text-center border-2 border-amber-300 rounded-lg py-1">
+                    <button onclick="updateQty('Soes Fla', 1)" class="bg-amber-700 text-white w-10 h-10 rounded-full hover:bg-amber-800 font-bold text-xl">+</button>
+                </div>
+            </div>
+
+            <!-- Getuk -->
+            <div class="menu-card bg-white rounded-3xl shadow-lg p-4 sm:p-6 border-2 border-amber-300 transition-all duration-300">
+                <img src="https://www.alamy.com/aggregator-api/download?url=https%3A%2F%2Fc8.alamy.com%2Fcomp%2F2GEDRTJ%2Fthree-market-snacks-from-indonesia-namely-klepon-getuk-lindri-and-wajik-on-a-plate-with-a-banana-leaf-and-sprinkled-with-grated-coconut-2GEDRTJ.jpg" alt="Getuk" class="w-full h-40 object-cover rounded-2xl mb-4">
+                <h3 class="text-lg font-bold text-center mb-2">Getuk</h3>
+                <p class="text-xl font-bold text-amber-700 text-center mb-4">Rp 5.000</p>
+                <div class="flex justify-center items-center gap-3">
+                    <button onclick="updateQty('Getuk', -1)" class="bg-amber-200 w-10 h-10 rounded-full hover:bg-amber-300 text-amber-900 font-bold text-xl">-</button>
+                    <input type="number" id="qty-Getuk" value="0" min="0" onchange="setQty('Getuk', this.value)" class="text-xl font-bold w-16 text-center border-2 border-amber-300 rounded-lg py-1">
+                    <button onclick="updateQty('Getuk', 1)" class="bg-amber-700 text-white w-10 h-10 rounded-full hover:bg-amber-800 font-bold text-xl">+</button>
+                </div>
+            </div>
+
+            <!-- Martabak -->
+            <div class="menu-card bg-white rounded-3xl shadow-lg p-4 sm:p-6 border-2 border-amber-300 transition-all duration-300">
+                <img src="https://tse2.mm.bing.net/th/id/OIP.Cw0EbKec1TeDfgDUV0zp7gHaFj?pid=Api&P=0&h=180" alt="Martabak" class="w-full h-40 object-cover rounded-2xl mb-4">
+                <h3 class="text-lg font-bold text-center mb-2">Martabak<br> Telur</h3>
+                <p class="text-xl font-bold text-amber-700 text-center mb-4">Rp 5.000</p>
+                <div class="flex justify-center items-center gap-3">
+                    <button onclick="updateQty('Martabak', -1)" class="bg-amber-200 w-10 h-10 rounded-full hover:bg-amber-300 text-amber-900 font-bold text-xl">-</button>
+                    <input type="number" id="qty-Martabak" value="0" min="0" onchange="setQty('Martabak', this.value)" class="text-xl font-bold w-16 text-center border-2 border-amber-300 rounded-lg py-1">
+                    <button onclick="updateQty('Martabak', 1)" class="bg-amber-700 text-white w-10 h-10 rounded-full hover:bg-amber-800 font-bold text-xl">+</button>
+                </div>
+            </div>
+
+            <!-- Nagasari -->
+            <div class="menu-card bg-white rounded-3xl shadow-lg p-4 sm:p-6 border-2 border-amber-300 transition-all duration-300">
+                <img src="https://www.alamy.com/aggregator-api/download?url=https%3A%2F%2Fc8.alamy.com%2Fcomp%2F2HJ7XB1%2Fnagasari-is-a-traditional-cake-from-indonesia-made-from-rice-flour-sago-flour-coconut-milk-and-sugar-filled-with-bananas-2HJ7XB1.jpg" alt="Nagasari" class="w-full h-40 object-cover rounded-2xl mb-4">
+                <h3 class="text-lg font-bold text-center mb-2">Nagasari</h3>
+                <p class="text-xl font-bold text-amber-700 text-center mb-4">Rp 5.000</p>
+                <div class="flex justify-center items-center gap-3">
+                    <button onclick="updateQty('Nagasari', -1)" class="bg-amber-200 w-10 h-10 rounded-full hover:bg-amber-300 text-amber-900 font-bold text-xl">-</button>
+                    <input type="number" id="qty-Nagasari" value="0" min="0" onchange="setQty('Nagasari', this.value)" class="text-xl font-bold w-16 text-center border-2 border-amber-300 rounded-lg py-1">
+                    <button onclick="updateQty('Nagasari', 1)" class="bg-amber-700 text-white w-10 h-10 rounded-full hover:bg-amber-800 font-bold text-xl">+</button>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Keranjang Sidebar -->
+        <div id="cart-sidebar" class="fixed inset-y-0 right-0 w-full sm:w-96 bg-white shadow-2xl p-6 sm:p-8 overflow-y-auto transform translate-x-full transition-transform duration-500 z-50">
+            <button onclick="toggleCart()" class="mb-6 text-3xl text-amber-700 hover:text-amber-900">&times;</button>
+            <h2 class="text-3xl font-bold mb-8 text-amber-800">Keranjang Pesanan</h2>
+            <div id="cart-items" class="mb-8 space-y-4"></div>
+            <div class="border-t pt-6">
+                <p class="text-xl font-bold text-amber-700 mb-2">Total Item: <span id="cart-total-items">0</span> pcs</p>
+                <p class="text-2xl font-bold text-amber-700">Total: Rp <span id="cart-total">0</span></p>
+                <p id="min-order-warning" class="text-sm text-red-600 mt-2 font-semibold hidden">⚠️ Minimal pembelian 50 pcs ya!</p>
+            </div>
+            <button id="submit-btn" onclick="submitOrder()" class="w-full mt-8 bg-gray-400 text-white py-5 rounded-2xl font-bold text-lg cursor-not-allowed transition shadow-lg" disabled>
+                Kirim Pesanan via WhatsApp
+            </button>
+            <p class="text-sm text-amber-600 mt-4 text-center">*Minimal pembelian 50 pcs (bisa campur)</p>
+        </div>
+    </main>
+
+    <script>
+        lucide.createIcons();
+
+        const cart = {};
+        const minOrder = 50;
+        const pricePerItem = 5000;
+
+        const menuItems = [
+            "Pastel Telur", "Lontong Daging", "Donat Coklat", "Donat Gula", "Tahu Baso",
+            "Risol Mayonaise", "Risol Rogut", "Lapis Surabaya", "Lapis Legit", "Tahu Goreng",
+            "Bakwan Udang", "Lemper Ayam", "Soes Fla", "Getuk", "Martabak", "Nagasari"
+        ];
+
+        menuItems.forEach(item => {
+            cart[item] = { qty: 0 };
+        });
+
+        function updateQty(name, change) {
+            if (cart[name].qty + change >= 0) {
+                cart[name].qty += change;
+                document.getElementById(`qty-${name}`).value = cart[name].qty;
+                updateCartDisplay();
+            }
+        }
+
+        function setQty(name, value) {
+            const qty = parseInt(value) || 0;
+            if (qty >= 0) {
+                cart[name].qty = qty;
+                document.getElementById(`qty-${name}`).value = qty;
+                updateCartDisplay();
+            }
+        }
+
+        function updateCartDisplay() {
+            let totalItems = 0;
+            let totalPrice = 0;
+            let cartHTML = '';
+
+            for (const [name, data] of Object.entries(cart)) {
+                if (data.qty > 0) {
+                    totalItems += data.qty;
+                    totalPrice += data.qty * pricePerItem;
+                    cartHTML += `<div class="flex justify-between py-3 border-b border-amber-200">
+                        <span class="font-medium">${name} x ${data.qty}</span>
+                        <span class="font-bold text-amber-700">Rp ${(data.qty * pricePerItem).toLocaleString('id-ID')}</span>
+                    </div>`;
+                }
+            }
+
+            document.getElementById('total-items').innerText = totalItems;
+            document.getElementById('total-price').innerText = totalPrice.toLocaleString('id-ID');
+            document.getElementById('cart-items').innerHTML = cartHTML || '<p class="text-amber-500 text-center">Keranjang kosong 😊</p>';
+            document.getElementById('cart-total').innerText = totalPrice.toLocaleString('id-ID');
+            document.getElementById('cart-total-items').innerText = totalItems;
+
+            // Update button state based on minimum order
+            const submitBtn = document.getElementById('submit-btn');
+            const minOrderWarning = document.getElementById('min-order-warning');
+            
+            if (totalItems >= minOrder) {
+                submitBtn.disabled = false;
+                submitBtn.classList.remove('bg-gray-400', 'cursor-not-allowed');
+                submitBtn.classList.add('bg-amber-700', 'hover:bg-amber-800', 'cursor-pointer');
+                minOrderWarning.classList.add('hidden');
+            } else {
+                submitBtn.disabled = true;
+                submitBtn.classList.add('bg-gray-400', 'cursor-not-allowed');
+                submitBtn.classList.remove('bg-amber-700', 'hover:bg-amber-800', 'cursor-pointer');
+                if (totalItems > 0) {
+                    minOrderWarning.classList.remove('hidden');
+                } else {
+                    minOrderWarning.classList.add('hidden');
+                }
+            }
+        }
+
+        function toggleCart() {
+            document.getElementById('cart-sidebar').classList.toggle('translate-x-full');
+        }
+
+        function submitOrder() {
+            const totalItems = Object.values(cart).reduce((sum, i) => sum + i.qty, 0);
+            
+            if (totalItems < minOrder) {
+                alert(`Minimal pembelian ${minOrder} pcs ya! Sekarang baru ${totalItems} pcs. Kurang ${minOrder - totalItems} pcs lagi 😊`);
+                return;
+            }
+
+            let message = "Halo Mom's Bakery! ❤️%0ASaya ingin pesan:%0A%0A";
+            let hasOrder = false;
+            for (const [name, data] of Object.entries(cart)) {
+                if (data.qty > 0) {
+                    message += `• ${name}: ${data.qty} pcs%0A`;
+                    hasOrder = true;
+                }
+            }
+            if (!hasOrder) {
+                alert("Keranjang masih kosong nih bro!");
+                return;
+            }
+            const totalPrice = document.getElementById('cart-total').innerText;
+            message += `%0A%0ATotal Item: ${totalItems} pcs%0ATotal Harga: Rp ${totalPrice}%0A%0ATerima kasih ya Mom! 😍`;
+
+            // Ganti dengan nomor WA asli Mom's Bakery
+            const waNumber = "6282124789077"; // <-- UBAH INI DULU YA!
+            window.open(`https://wa.me/${waNumber}?text=${message}`);
+        }
+    </script>
+</body>
+</html>
